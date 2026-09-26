@@ -12,3 +12,4 @@ pyarrow
 openpyxl
 mlxtend==0.23.4
 ucimlrepo
+python-dotenv
