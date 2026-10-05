@@ -1,0 +1,121 @@
+{
+  "source": {
+    "name": "TMDB API",
+    "base_url": "https://api.themoviedb.org/3",
+    "discover_endpoint": "/discover/movie",
+    "credits_endpoint": "/movie/{movie_id}/credits"
+  },
+  "scope": {
+    "release_date_start": "2020-01-01",
+    "release_date_end": "2025-12-31",
+    "origin_country": "US",
+    "genres": {
+      "Drama": 18,
+      "Thriller": 53,
+      "operator": "OR"
+    },
+    "minimum_vote_count": 100,
+    "cast_rule": "Top 6 actors by lowest billing order",
+    "crew_jobs": [
+      "Director",
+      "Producer",
+      "Director of Photography"
+    ]
+  },
+  "acquisition": {
+    "movies": {
+      "start_time": "2026-10-05T13:14:49.300604+00:00",
+      "end_time": "2026-10-05T13:15:06.312574+00:00",
+      "duration_seconds": 17.01,
+      "movies_acquired": 1208
+    },
+    "credits": {
+      "start_time": "2026-10-05T13:15:26.913891+00:00",
+      "end_time": "2026-10-05T13:20:27.221091+00:00",
+      "duration_seconds": 300.31,
+      "requests_attempted": 1208,
+      "requests_succeeded": 1208,
+      "requests_failed": 0,
+      "failed_movie_ids": []
+    },
+    "log_created_at": "2026-10-05T15:20:42.870368"
+  },
+  "movies_dataset": {
+    "path": "data/raw/movies.parquet",
+    "shape": [
+      1208,
+      9
+    ],
+    "columns": [
+      "id",
+      "title",
+      "original_title",
+      "release_date",
+      "genre_ids",
+      "original_language",
+      "vote_count",
+      "vote_average",
+      "popularity"
+    ],
+    "unique_movies": 1208,
+    "duplicate_rows": 0,
+    "missing_values": {},
+    "statistics": {
+      "vote_count": {
+        "min": 100,
+        "max": 12616,
+        "mean": 936.35
+      },
+      "vote_average": {
+        "min": 4.03,
+        "max": 8.4,
+        "mean": 6.45
+      },
+      "popularity": {
+        "min": 1.17,
+        "max": 107.04,
+        "mean": 7.87
+      }
+    }
+  },
+  "credits_dataset": {
+    "path": "data/raw/credits.parquet",
+    "shape": [
+      14252,
+      7
+    ],
+    "columns": [
+      "movie_id",
+      "person_id",
+      "person_name",
+      "role",
+      "department",
+      "job",
+      "billing_order"
+    ],
+    "unique_people": 8839,
+    "duplicate_rows": 0,
+    "missing_values": {
+      "department": 7191,
+      "job": 7191,
+      "billing_order": 7061
+    },
+    "role_counts": {
+      "actor": 7191,
+      "producer": 4573,
+      "director": 1289,
+      "cinematographer": 1199
+    },
+    "movies_by_role": {
+      "actor": 1203,
+      "cinematographer": 1138,
+      "director": 1208,
+      "producer": 1177
+    },
+    "movies_with_6_actors": 1189
+  },
+  "cache": {
+    "path": "cache",
+    "cached_responses": 1269
+  }
+}
