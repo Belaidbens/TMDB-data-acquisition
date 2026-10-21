@@ -1,7 +1,7 @@
 # EDA findings — TMDB movies and credits
 
 **Pair:** BENSAADA Mohand Oubelaid && KHARIONOVSKAIA Polina · 
-**Dataset:** TMDB API — US-origin Drama or Thriller movies released from 2020 to 2025, with `vote_count >= 100`; selected credits include the top-6 billed actors and crew jobs Director, Producer, and Director of Photography · **Date:** 2026-10-20  
+**Dataset:** TMDB API — US-origin Drama or Thriller movies released from 2020 to 2025, with `vote_count >= 100`; selected credits include the top-6 billed actors and crew jobs Director, Producer, and Director of Photography · **Date:** 2026-10-21  
 **Rows × columns:** Movies: 1208 × 9 · Credits: 14252 × 7 · 
 **File:** `data/raw/movies.parquet`, `data/raw/credits.parquet`
 
@@ -28,7 +28,22 @@ The `role` column fully predicts the missingness. Actors have a billing order bu
 The mechanism is consistent with **MAR**, because the missingness is fully explained by the observed `role` column. 
 
 **Decision.**  
-Keep all rows and keep these missing values as they are. we do not use `dropna()` and do not impute them, because this would either remove useful credit rows or create artificial information.
+Keep all rows and keep these missing values as they are. We do not use `dropna()` and do not impute them, because this would either remove useful credit rows or create artificial information. The evidence is explicit: 7191 actor rows are missing `department` and `job`, while 7061 crew rows are missing `billing_order`, and in every case the missingness is explained by the observed `role` column.
+
+**Decision table.**
+
+| Problem | Evidence | Decision | Output |
+| --- | --- | --- | --- |
+| Role-dependent missingness | 7191 actor rows missing `department` and `job`; 7061 crew rows missing `billing_order` | Keep the rows and record why the field is not applicable | `missing_reason` |
+| Short cast lists | 14 movies have fewer than 6 actors; none have zero actors | Keep these movies and their related credit rows, and flag them instead of dropping them | `cast_short_flag = True` |
+| Extreme but valid values | `vote_count` max = 12616, `popularity` max = 107.04 | Keep them because they are plausible and within allowed ranges; describe them in EDA but do not create a separate flag | No flag needed |
+| Scope limitation | Filter is US-only, Drama/Thriller, `vote_count >= 100`, 2020–2025 | Keep the restriction and document it as a limitation of the dataset scope | No row-level flag; described as a dataset-level limitation |
+
+**Raw vs cleaned dataset.**  
+The raw parquet files remain untouched. We create a flagged version for analysis and keep the decisions auditable: `data/clean/movies_flagged.parquet` and `data/clean/credits_flagged.parquet`. This preserves the original acquisition record while allowing a reproducible, documented cleaning workflow.
+
+**What we did not do.**  
+We did not drop rows, we did not impute missing crew titles or missing actor departments, and we did not treat structural NA values as broken records. This is the core cleaning decision for this project: the data are not “bad”; they are domain-consistent but require explicit labeling.
 
 ---
 
@@ -105,9 +120,16 @@ No. This is mainly a coverage / selection bias issue. Collecting more rows with 
 
 ---
 
-## 5. What you need to do next
+## 5. Final cleaning decisions
 
-1. **Some credit fields are structurally missing — keep them as not applicable and do not impute or drop them — no rows are lost and the distinction between cast and crew is preserved.**
+1. **Some credit fields are missing because they do not apply to that role. We kept these values missing and did not fill them or remove the rows.**
 
-2.
-3.
+2. **Fourteen movies have fewer than six actors. TMDB does not always return six cast members, so we kept these movies and marked them with `cast_short_flag`.**
+
+3. **Our dataset has a limited scope, so it does not represent all US films. We kept the original filters and described them as a limitation, not as a data error.**
+
+4. **The cleaning notebook makes flagged copies of the raw files. The main fields added are `cast_short_flag` and `missing_reason`. We did not create a pipeline that automatically deletes rows.**
+
+5. **The raw data was kept unchanged. We created clean copies with flags and explained why each decision was made.**
+
+6. **We did not use a predictive model or target variable in this milestone, so train/test leakage does not apply here. We focused on data quality and keeping the cleaning process traceable.**
