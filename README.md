@@ -119,7 +119,9 @@ data/processed/
 
 The mining stage currently includes **k-means clustering of movies** using release year, vote information, popularity, and genre features.
 
-Project structure
+## Project structure
+
+```text
 tmdb-data-acquisition/
 │
 ├── data/
@@ -144,36 +146,55 @@ tmdb-data-acquisition/
 ├── cleaning_decisions.md
 ├── README.md
 └── requirements.txt
+```
 
+## Data cleaning
 
-Data cleaning
 Cleaning is deliberately conservative.
 
 The raw datasets are never modified in place.
 
 The main decisions are:
+
 - convert release dates to datetime;
 - preserve structural missing values;
 - retain plausible extreme values;
 - verify duplicate and referential integrity constraints;
 - flag incomplete selected credits instead of automatically deleting movies;
 - keep one movie per row in the main movie dataset.
+
 Cleaned datasets are stored separately from the raw acquisition data.
 
-Clustering
+## Clustering
+
 The first mining task uses k-means clustering.
-Unit of analysis
+
+### Unit of analysis
+
+```text
 One row = one movie
+```
+
 The goal is to discover groups of films with similar profiles.
-Features
+
+### Features
+
 The clustering representation uses:
+
+```text
 year
 log_vote_count
 vote_average
 log_popularity
 genre indicators
-vote_count and popularity are transformed using:
+```
+
+`vote_count` and `popularity` are transformed using:
+
+```text
 log(1 + x)
+```
+
 because of their strongly right-skewed distributions.
 
 Continuous variables are standardized before clustering.
@@ -181,56 +202,88 @@ Continuous variables are standardized before clustering.
 Genres are represented using multi-hot encoding.
 
 The final clustering feature matrix contains:
-1,208 movies × 23 features
 
-Choosing the number of clusters
+```text
+1,208 movies × 23 features
+```
+
+### Choosing the number of clusters
+
 K-means was tested for:
+
+```text
 k = 2, ..., 8
+```
+
 using:
+
+```text
 initialization = k-means++
 n_init         = 10
 random_state   = 0
+```
+
 Both inertia and silhouette score were used as diagnostics.
 
 The candidate solutions were also evaluated according to:
+
 - cluster sizes;
 - interpretability;
 - movie profiles;
 - genre distributions;
 - actual movies contained in each cluster.
-The final selected solution uses:
-k = 4
 
-Cluster interpretation
-Cluster	Interpretation
-0	Low-engagement, lower-rated thriller-oriented films
-1	Recent moderate-engagement drama/thriller releases
-2	High-profile, high-engagement films
-3	Older, well-rated drama-oriented filmsCluster 0
+The final selected solution uses:
+
+```text
+k = 4
+```
+
+### Cluster interpretation
+
+| Cluster | Interpretation |
+| ---: | --- |
+| 0 | Low-engagement, lower-rated thriller-oriented films |
+| 1 | Recent moderate-engagement drama/thriller releases |
+| 2 | High-profile, high-engagement films |
+| 3 | Older, well-rated drama-oriented films |
+
+#### Cluster 0
+
 Mostly Thriller and Drama movies, with relatively high proportions of Horror, Action and Crime.
 
 This cluster has the lowest average:
+
 - vote count;
 - rating;
 - popularity.
-Cluster 1
+
+#### Cluster 1
+
 Contains mainly recent movies, with an average release year close to 2024.
 
 The films have moderate:
+
 - engagement;
 - ratings;
 - popularity.
-Cluster 2
+
+#### Cluster 2
+
 Contains the most visible and highly engaged-with films.
 
 Examples include:
+
 - Oppenheimer;
 - The Batman;
 - Top Gun: Maverick;
 - Tenet;
 - John Wick: Chapter 4.
+
 This cluster has the highest average vote count, popularity and rating.
-Cluster 3
+
+#### Cluster 3
+
 Contains mostly older, well-rated films with moderate-to-high engagement.
 
 Drama is particularly dominant in this cluster, representing approximately 75% of its films.
@@ -240,4 +293,3 @@ Drama is particularly dominant in this cluster, representing approximately 75% o
 TMDB API authentication uses a Bearer token.
 
 The API token should be configured locally and must **not** be committed to the repository.
-
