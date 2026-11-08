@@ -24,21 +24,21 @@
   },
   "acquisition": {
     "movies": {
-      "start_time": "2026-11-07T19:24:50.364765+00:00",
-      "end_time": "2026-11-07T19:24:50.403187+00:00",
-      "duration_seconds": 0.04,
+      "start_time": "2026-11-07T19:50:45.311709+00:00",
+      "end_time": "2026-11-07T19:50:45.326105+00:00",
+      "duration_seconds": 0.01,
       "movies_acquired": 1208
     },
     "credits": {
-      "start_time": "2026-11-07T19:26:06.384938+00:00",
-      "end_time": "2026-11-07T19:26:07.027375+00:00",
-      "duration_seconds": 0.64,
+      "start_time": "2026-11-07T19:50:45.373830+00:00",
+      "end_time": "2026-11-07T19:50:45.747852+00:00",
+      "duration_seconds": 0.37,
       "requests_attempted": 1208,
       "requests_succeeded": 1208,
       "requests_failed": 0,
       "failed_movie_ids": []
     },
-    "log_created_at": "2026-11-07T20:28:46.767449"
+    "log_created_at": "2026-11-07T20:50:45.944069"
   },
   "movies_dataset": {
     "path": "data/raw/movies.parquet",
